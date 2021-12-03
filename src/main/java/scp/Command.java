@@ -1,6 +1,8 @@
 package scp;
 
-public class Command {
+import java.io.Serializable;
+
+public class Command implements Serializable {
     public String command;
     public String paht1;
     public String path2;

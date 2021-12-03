@@ -10,11 +10,34 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Server implements AutoCloseable {
     public static void main(String[] args) throws Exception {
         try (Server server = new Server(12345)) {
             server.start();
+            Waite waite = new Waite();
+            waite.waite();
+        }
+    }
+
+    private static class Waite{
+
+        public void waite() {
+            Scanner scanner = new Scanner(System.in);
+            while (true) {
+                String command = scanner.nextLine();
+
+                String[] commandArgs = command.split("\s");
+                switch (commandArgs[0]) {
+                    case "quit":
+                        System.out.println("Bye");
+                        return;
+                    default:
+                        System.err.println("Неизвестная команда: " + commandArgs[0]);
+                        break;
+                }
+            }
         }
     }
 
