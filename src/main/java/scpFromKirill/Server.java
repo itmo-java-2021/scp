@@ -1,4 +1,4 @@
-package scp;
+package scpFromKirill;
 
 import java.io.*;
 import java.net.ServerSocket;
