@@ -9,9 +9,9 @@ public class Server {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
-        StringBuilder homeDir = new StringBuilder("");
+        StringBuilder homeDir = new StringBuilder();
         if (args.length != 0) {
-            homeDir.append(args[0] + File.separator);
+            homeDir.append(args[0]).append(File.separator);
         } else {
             homeDir.append("D:\\");
         }
@@ -27,43 +27,38 @@ public class Server {
                 Message messageRead = (Message) is.readObject();
                 String[] command = messageRead.getRequest().split(" ");
                 switch (command[0]) {
-
-                    case "ls":
+                    case "ls" -> {
                         if (command.length > 1) {
                             homePlusFileDir.append(command[1]);
                         }
                         Process run = Runtime.getRuntime().exec("cmd /C dir " + homePlusFileDir);
                         BufferedReader bufRead = new BufferedReader(new InputStreamReader(run.getInputStream(), Charset.forName("cp866")));
-                        String line = "";
+                        String line;
                         StringBuilder strBuil = new StringBuilder();
                         while ((line = bufRead.readLine()) != null) {
                             strBuil.append(line).append("\n");
                         }
                         Message message = new Message("ls", strBuil.toString());
                         os.writeObject(message);
-                        break;
-
-                    case "download":
+                    }
+                    case "download" -> {
                         filename = command[1];
                         File downloadFile = new File(homeDir + filename);
-                        try(BufferedInputStream bufInStr = new BufferedInputStream(new FileInputStream(downloadFile))) {
+                        try (BufferedInputStream bufInStr = new BufferedInputStream(new FileInputStream(downloadFile))) {
                             CopyStream.copyStream(bufInStr, os);
                         } catch (FileNotFoundException ex) {
                             System.err.println("Файл не найден");
-                            downloadFile.delete();
                         }
-                        break;
-
-                    case "upload":
+                    }
+                    case "upload" -> {
                         filename = command[1];
                         File uploadFile = new File(homeDir + filename);
-                        try(BufferedOutputStream bufOutStr = new BufferedOutputStream(new FileOutputStream(uploadFile))) {
+                        try (BufferedOutputStream bufOutStr = new BufferedOutputStream(new FileOutputStream(uploadFile))) {
                             CopyStream.copyStream(is, bufOutStr);
                         } catch (FileNotFoundException ex) {
                             System.err.println("Файл не найден");
-                            uploadFile.delete();
                         }
-                        break;
+                    }
                 }
             }
         }
